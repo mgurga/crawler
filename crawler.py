@@ -1,5 +1,7 @@
+import datetime as dt
 import hashlib
 import os
+import sqlite3
 from pathlib import Path
 
 import nest_asyncio
@@ -10,6 +12,21 @@ from scrapy.crawler import CrawlerProcess
 from url_normalize import url_normalize
 
 load_dotenv()
+
+
+# initialize sqlite3 database
+def create_database(mapcon: sqlite3.Connection):
+    cur = mapcon.cursor()
+    cur.execute("CREATE TABLE visited (url TEXT, date DATE, depth INTEGER, hash TEXT)")
+    mapcon.commit()
+
+
+# create sqlite database if does not exist
+if os.path.isfile("map.db"):
+    mapcon = sqlite3.connect("map.db")
+else:
+    mapcon = sqlite3.connect("map.db")
+    create_database(mapcon)
 
 
 class WebSpider(scrapy.Spider):
@@ -37,6 +54,9 @@ class WebSpider(scrapy.Spider):
         self.page_count = 0
         os.makedirs(output_dir, exist_ok=True)
 
+        self.mapcon = sqlite3.connect("map.db")
+        self.mapcur = self.mapcon.cursor()
+
         self.start_urls = []
         if Path(seed_file).exists():
             with open(seed_file) as f:
@@ -53,7 +73,7 @@ class WebSpider(scrapy.Spider):
         # "Data structures employed"
         # "how does it handle duplicate pages?"
         url = url_normalize(response.url)
-        if url in self.visited:
+        if self.is_visited(url):
             return
 
         self.visited.add(url)
@@ -67,15 +87,26 @@ class WebSpider(scrapy.Spider):
             f.write(response.body)
         print(f"Crawled: {url}, page {self.page_count}")
 
+        self.add_visited(url, url_hash, depth)
+
         if depth < self.max_depth:
             # Search the DOM for any and all link elements
             for href in response.css("a::attr(href)").getall():
                 leaf_url = url_normalize(response.urljoin(href))
                 # "how does it handle duplicate pages?"
-                if leaf_url not in self.visited:
+                if not self.is_visited(leaf_url):
                     yield scrapy.Request(
                         leaf_url, callback=self.parse, cb_kwargs={"depth": depth + 1}
                     )
+
+    def is_visited(self, url):
+        return url in self.visited
+
+    def add_visited(self, url, hash, depth):
+        self.mapcur.execute(
+            f"INSERT INTO visited VALUES ('{url}', '{dt.datetime.now().isoformat()}', {depth}, '{hash}')",
+        )
+        self.mapcon.commit()
 
 
 print("created WebSpider class")
