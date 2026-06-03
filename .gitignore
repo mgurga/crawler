@@ -1,4 +1,5 @@
 crawled_pages/
+index/
 .env
 seed_file.txt
 map.db

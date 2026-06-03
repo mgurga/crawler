@@ -3,3 +3,4 @@ url-normalize
 atproto
 nest_asyncio
 python-dotenv
+whoosh
