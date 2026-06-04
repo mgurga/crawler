@@ -11,33 +11,42 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    var resoffset = document.getElementById("results").getBoundingClientRect().y + window.scrollY;
     var results = document.getElementsByClassName("result");
+
     for (var i = 0; i < results.length; i++) {
         var ele = results[i];
-        var indexy = ele.getBoundingClientRect().y + window.scrollY + resoffset - 15;
+        var indexy = ele.getBoundingClientRect().y + window.scrollY;
+        indexy += ele.getBoundingClientRect().height / 2;
+        var indexrad = ele.getBoundingClientRect().height / 2;
 
         if (i != results.length - 1) {
-            var middley = results[i+1].getBoundingClientRect().y + window.scrollY + resoffset - 15;
+            var middley = results[i + 1].getBoundingClientRect().y + window.scrollY;
+            middley += results[i + 1].getBoundingClientRect().height / 2;
             middley = (indexy + middley) / 2;
+            var arcrad = middley - indexy
 
             ctx.beginPath();
             if (i % 2 == 0) {
-                ctx.arc((canvas.width / 2), middley, 90, 0.5 * Math.PI, 1.5 * Math.PI);
+                ctx.arc((canvas.width / 5)*2, middley, arcrad, 0.5 * Math.PI, 1.5 * Math.PI);
             } else {
-                ctx.arc((canvas.width / 2), middley, 90, 1.5 * Math.PI, 0.5 * Math.PI);
+                ctx.arc((canvas.width / 5)*3, middley, arcrad, 1.5 * Math.PI, 0.5 * Math.PI);
             }
             ctx.strokeStyle = "black";
             ctx.stroke()
         }
 
         var indexshrink = 0;
-        if (i > 3) {
-            indexshrink = (i - 4) * 5;
+        if (i > Math.floor(results.length / 2)) {
+            indexshrink = (i - Math.floor(results.length / 2)) * 2;
         }
 
+        // ctx.beginPath();
+        // ctx.moveTo(0, indexy);
+        // ctx.lineTo(canvas.width, indexy);
+        // ctx.stroke();
+
         ctx.beginPath();
-        ctx.arc((canvas.width / 2), indexy, 60 - indexshrink, 0, 2 * Math.PI);
+        ctx.arc((canvas.width / 2), indexy, indexrad - indexshrink, 0, 2 * Math.PI);
         ctx.fillStyle = "white";
         ctx.fill();
         ctx.strokeStyle = "black";

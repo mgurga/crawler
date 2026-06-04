@@ -10,7 +10,7 @@ searcher = ix.searcher()
 
 def query(query_str):
     q = qp.parse(query_str)
-    return searcher.search(q)
+    return searcher.search(q, limit=None)
 
 
 @app.route("/script.js")
@@ -27,7 +27,16 @@ def index():
 def search():
     q = request.args.get("q")
     results = query(q)
+
     print(f"query '{q}' returned results ...")
+    print(results)
     for r in results:
         print(f"result: {r}")
-    return render_template("search.html", results=results, query=q)
+
+    return render_template(
+        "search.html",
+        results=results[:20],
+        query=q,
+        runtime=results.runtime,
+        total=len(results),
+    )
