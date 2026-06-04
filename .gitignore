@@ -1,5 +1,6 @@
 crawled_pages/
 index/
+__pycache__/
 .env
 seed_file.txt
 map.db

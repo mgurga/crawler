@@ -4,3 +4,4 @@ atproto
 nest_asyncio
 python-dotenv
 whoosh
+Flask

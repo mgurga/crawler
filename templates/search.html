@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CrawlerSearch Results</title>
+    </head>
+
+    <body>
+        <canvas id="indexcanvas"></canvas>
+
+        <div id="searchcontainer">
+            <form action="/search" method="GET" id="searchform">
+                <input id="searchbar" name="q" value="{{ query }}" type="text">
+                <button id="searchbutton">
+                    <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    	 viewBox="0 0 512 512"  xml:space="preserve">
+                    <style type="text/css">
+    	.st0{fill:#000000;}
+                    </style>
+                    <g>
+    	<path class="st0" d="M376.324,312.508c49.638-78.774,40.238-184.326-28.306-252.871c-79.507-79.515-208.872-79.515-288.388,0
+    		c-79.507,79.516-79.507,208.873,0,288.379c68.536,68.544,174.115,77.935,252.88,28.306l135.668,135.676L512,448.186
+    		L376.324,312.508z M296.543,296.542c-51.121,51.139-134.308,51.139-185.439,0c-51.121-51.121-51.112-134.299,0.009-185.43
+    		c51.122-51.121,134.309-51.13,185.43-0.008C347.665,162.243,347.665,245.421,296.543,296.542z"/>
+                    </g>
+                    </svg>
+                </button>
+            </form>
+    
+            <div id="results">
+                {% for hit in results %}
+                <div class="result">
+                    <!--<h1 class="resultindex">#{{ loop.index }}</h1>-->
+                    <!--<div style="height: 100%">-->
+                        <h2 class="resulttitle">{{ hit.title }}</h2>
+                        <p class="resultsnippet">{{ hit.snippet }}</p>
+                    <!--</div>-->
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@700&display=swap');
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #indexcanvas {
+            width: 230px;
+        }
+
+        #results {
+            display: grid;
+            grid-auto-rows: 1fr;
+            width: 700px;
+            row-gap: 20px;
+            margin-top: 15px;
+        }
+
+        #searchcontainer {
+            display: inline;
+            width: 70%;
+            margin-top: 30px;
+        }
+        
+        .resulttitle {
+            margin: 0;
+            margin-bottom: 5px;
+            font-family: "Kode Mono", monospace;
+            font-size: 16pt;
+        }
+
+        .resultsnippet {
+            margin: 0;
+        }
+
+        .result {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .resultindex {
+            display: flex;
+            flex-shrink: 0;
+            font-family: "Kode Mono", monospace;
+            font-style: italic;
+            border: 2px solid black;
+            border-radius:50%;
+            -moz-border-radius:50%;
+            width: 70px;
+            height: 70px;
+            align-items: center;
+            justify-content: center;
+            margin-left: 30px;
+            margin-right: 40px;
+            background-color: white;
+            z-index: 5;
+        }
+
+        #searchbar, #searchbutton {
+            border-color: black;
+            background-color: white;
+        }
+
+        #searchform {
+            display: inline-flex;
+            width: 60%;
+        }
+        
+        #searchbutton {
+            display: inline-flex;
+            width: 7%;
+            padding: 10px;
+            border-left: none;
+        }
+
+        #searchbar {
+            width: 80%;
+            padding: 8px 10px;
+            font-size: 16pt;
+            border-right: none;
+
+            font-family: "Kode Mono", monospace;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+        }
+    </style>
+
+    <script src="/script.js"></script>
+</html>
