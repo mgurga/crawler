@@ -2,9 +2,17 @@ console.log("script loaded");
 
 const canvas = document.getElementById("indexcanvas");
 const ctx = canvas.getContext("2d");
+const previewframe = document.getElementById("previewframe");
 
 canvas.setAttribute("height", document.getElementsByTagName("body")[0].clientHeight);
 canvas.setAttribute("width", 230);
+
+function previewlink(ele, url) {
+    console.log(`previewing url: ${url}`);
+    previewframe.src = url;
+    previewframe.style.top = (ele.getBoundingClientRect().y + window.scrollY) + "px";
+    previewframe.style.display = "block";
+}
 
 function draw() {
     requestAnimationFrame(draw);
@@ -27,8 +35,10 @@ function draw() {
 
             ctx.beginPath();
             if (i % 2 == 0) {
+                // left arc
                 ctx.arc((canvas.width / 5)*2, middley, arcrad, 0.5 * Math.PI, 1.5 * Math.PI);
             } else {
+                // right arc
                 ctx.arc((canvas.width / 5)*3, middley, arcrad, 1.5 * Math.PI, 0.5 * Math.PI);
             }
             ctx.strokeStyle = "black";
@@ -40,11 +50,13 @@ function draw() {
             indexshrink = (i - Math.floor(results.length / 2)) * 2;
         }
 
+        // search result centerline
         // ctx.beginPath();
         // ctx.moveTo(0, indexy);
         // ctx.lineTo(canvas.width, indexy);
         // ctx.stroke();
 
+        // result circle background
         ctx.beginPath();
         ctx.arc((canvas.width / 2), indexy, indexrad - indexshrink, 0, 2 * Math.PI);
         ctx.fillStyle = "white";
@@ -52,6 +64,7 @@ function draw() {
         ctx.strokeStyle = "black";
         ctx.stroke();
 
+        // result index text
         ctx.fillStyle = "black";
         ctx.font = "italic 40pt Kode Mono";
         ctx.textBaseline = "middle";
